@@ -41,16 +41,15 @@ def ascii_brands
 end
 
 def get_toy_name(toy)
-	#puts toy.class
 	return toy["title"]
 end
 
 def get_retail_price(toy)
 	return toy["full-price"].to_f
 end
+
 def get_list_purchases(toy)
 	purchases = toy["purchases"]
-	purchases.class
 	return purchases
 end
 
@@ -69,21 +68,65 @@ end
 def calc_average_discount(price_retail,price_average)
 	return price_retail - price_average
 end
+
 def get_brand_name(brand)
 	return brand["name"]
 end
+
 def get_total_stock_toys(brand)
 	return brand["stock"]
 end
+
 def get_total_sales_brand(brand)
 	return brand["sales"].round(2)
 end
-def start
-	brands_data = {}
-	# Print "Sales Report" in ascii art
-	ascii_sales_report
-	# Print today's date
-	puts Time.now
+
+def is_brand_recorded(brand)
+	return $brands_data.has_key?(brand)
+end
+
+def get_brand(toy)
+	return toy["brand"]
+end
+
+def build_brands_data_hash(toy_brand,retail_price,toy_sales,toys_stock)
+	if !is_brand_recorded(toy_brand)
+		$brands_data[toy_brand] = Hash.new
+		$brands_data[toy_brand]["name"] = toy_brand
+		$brands_data[toy_brand]["count"] = 1
+		$brands_data[toy_brand]["price"] = retail_price
+		$brands_data[toy_brand]["sales"] = toy_sales
+		$brands_data[toy_brand]["stock"] = toys_stock
+	else
+		$brands_data[toy_brand]["count"] += 1
+		$brands_data[toy_brand]["price"] += retail_price
+		$brands_data[toy_brand]["sales"] += toy_sales
+		$brands_data[toy_brand]["stock"] += toys_stock
+	end
+end
+
+def display_brands
+	# Print "Brands" in ascii art
+	ascii_brands
+	# For each brand in the data set:
+	$brands_data.each do |key,brand|
+		# Print the name of the brand
+		brand_name = get_brand_name(brand)
+		puts brand_name
+		# Count and print the number of the brand's toys we stock
+		total_toys = get_total_stock_toys(brand)
+		puts total_toys
+		# Calculate and print the average price of the brand's toys
+		average_price = calc_average_price(brand["price"],total_toys)
+		puts average_price
+		# Calculate and print the total sales volume of all the brand's toys combined
+		total_sales = get_total_sales_brand(brand)
+		puts total_sales
+	end
+
+end
+
+def display_products
 	# Print "Products" in ascii art
 	asscii_products
 	# For each product in the data set:
@@ -107,39 +150,19 @@ def start
 		discount = calc_average_discount(price,average)
 		puts "Average Discount $#{discount}"
 		puts
+		build_brands_data_hash(get_brand(toy),price,sales,toy["stock"])
+	end
 
-		if !brands_data.has_key?(toy["brand"])
-			brands_data[toy["brand"]] = Hash.new
-			brands_data[toy["brand"]]["name"] = toy["brand"]
-			brands_data[toy["brand"]]["count"] = 1
-			brands_data[toy["brand"]]["price"] = price
-			brands_data[toy["brand"]]["sales"] = sales
-			brands_data[toy["brand"]]["stock"] = toy["stock"]
-		else
-			brands_data[toy["brand"]]["count"] += 1
-			brands_data[toy["brand"]]["price"] += price
-			brands_data[toy["brand"]]["sales"] += sales
-			brands_data[toy["brand"]]["stock"] += toy["stock"]
-		end
-	end
-	# Print "Brands" in ascii art
-	ascii_brands
-	# For each brand in the data set:
-	brands_data.each do |key,brand|
-		# Print the name of the brand
-		brand_name = get_brand_name(brand)
-		puts brand_name
-		# Count and print the number of the brand's toys we stock
-		total_toys = get_total_stock_toys(brand)
-		puts total_toys
-		# Calculate and print the average price of the brand's toys
-		average_price = calc_average_price(brand["price"],total_toys)
-		puts average_price
-		# Calculate and print the total sales volume of all the brand's toys combined
-		total_sales = get_total_sales_brand(brand)
-		puts total_sales
-		puts
-	end
+end
+
+def start
+	$brands_data = {}
+	# Print "Sales Report" in ascii art
+	ascii_sales_report
+	# Print today's date
+	puts Time.now
 end
 setup_files
 start
+display_products
+display_brands
