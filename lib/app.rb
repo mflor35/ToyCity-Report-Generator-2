@@ -7,37 +7,35 @@ def setup_files
 end
 
 def ascii_sales_report
-	puts "  _____           _                  _____                                  _           "
-	puts " / ____|         | |                |  __ \\                                | |         "
-	puts "| (___     __ _  | |   ___   ___    | |__) |   ___   _ __     ___    _ __  | |_         "
-	puts " \\___ \\   / _` | | |  / _ \\ / __|   |  _  /   / _ \\ | '_ \\   / _ \\  | '__| | __|  "
-	puts " ____) | | (_| | | | |  __/ \\__ \\   | | \\ \\  |  __/ | |_) | | (_) | | |    | |_     "
-	puts "|_____/   \\__,_| |_|  \\___| |___/   |_|  \\_\\  \\___| | .__/   \\___/  |_|     \\__| "
-	puts "                                                    | |                                 "
-	puts "                                                    |_|                                 "
+	$report_file.write( "  _____           _                  _____                                  _           \n")
+	$report_file.write( " / ____|         | |                |  __ \\                                | |         \n")
+	$report_file.write( "| (___     __ _  | |   ___   ___    | |__) |   ___   _ __     ___    _ __  | |_         \n")
+	$report_file.write( " \\___ \\   / _` | | |  / _ \\ / __|   |  _  /   / _ \\ | '_ \\   / _ \\  | '__| | __|  \n")
+	$report_file.write( " ____) | | (_| | | | |  __/ \\__ \\   | | \\ \\  |  __/ | |_) | | (_) | | |    | |_     \n")
+	$report_file.write( "|_____/   \\__,_| |_|  \\___| |___/   |_|  \\_\\  \\___| | .__/   \\___/  |_|     \\__| \n")
+	$report_file.write( "                                                    | |                                 \n")
+	$report_file.write( "                                                    |_|                                 \n")
 
 end
 
 def asscii_products
-	puts "                     _            _       "
-	puts "                    | |          | |      "
-	puts " _ __  _ __ ___   __| |_   _  ___| |_ ___ "
-	puts "| '_ \\| '__/ _ \\ / _` | | | |/ __| __/ __|"
-	puts "| |_) | | | (_) | (_| | |_| | (__| |_\\__ \\"
-	puts "| .__/|_|  \\___/ \\__,_|\\__,_|\\___|\\__|___/"
-	puts "| |                                       "
-	puts "|_|                                       "
-	puts
+	$report_file.write( "                     _            _       \n")
+	$report_file.write( "                    | |          | |      \n")
+	$report_file.write( " _ __  _ __ ___   __| |_   _  ___| |_ ___ \n")
+	$report_file.write( "| '_ \\| '__/ _ \\ / _` | | | |/ __| __/ __|\n")
+	$report_file.write( "| |_) | | | (_) | (_| | |_| | (__| |_\\__ \\ \n")
+	$report_file.write( "| .__/|_|  \\___/ \\__,_|\\__,_|\\___|\\__|___/\n")
+	$report_file.write( "| |                                       \n")
+	$report_file.write( "|_|                                       \n")
 end
 
 def ascii_brands
-	puts " _                         _     "
-	puts "| |                       | |    "
-	puts "| |__  _ __ __ _ _ __   __| |___ "
-	puts "| '_ \\| '__/ _` | '_ \\ / _` / __|"
-	puts "| |_) | | | (_| | | | | (_| \\__ \\"
-	puts "|_.__/|_|  \\__,_|_| |_|\\__,_|___/"
-	puts
+	$report_file.write( " _                         _     \n")
+	$report_file.write( "| |                       | |    \n")
+	$report_file.write( "| |__  _ __ __ _ _ __   __| |___ \n")
+	$report_file.write( "| '_ \\| '__/ _` | '_ \\ / _` / __|\n")
+	$report_file.write( "| |_) | | | (_| | | | | (_| \\__ \\\n")
+	$report_file.write( "|_.__/|_|  \\__,_|_| |_|\\__,_|___/\n\n")
 end
 
 def get_toy_name(toy)
@@ -105,54 +103,52 @@ def build_brands_data_hash(toy_brand,retail_price,toy_sales,toys_stock)
 	end
 end
 
-def display_brands
+def brands_report
 	# Print "Brands" in ascii art
 	ascii_brands
+	report = ""
 	# For each brand in the data set:
 	$brands_data.each do |key,brand|
 		# Print the name of the brand
-		brand_name = get_brand_name(brand)
-		puts brand_name
 		# Count and print the number of the brand's toys we stock
 		total_toys = get_total_stock_toys(brand)
-		puts total_toys
 		# Calculate and print the average price of the brand's toys
 		average_price = calc_average_price(brand["price"],total_toys)
-		puts average_price
 		# Calculate and print the total sales volume of all the brand's toys combined
 		total_sales = get_total_sales_brand(brand)
-		puts total_sales
+		report += "Brand Name: #{key}\nToys in Stock: #{total_toys}\nAverage Price: $#{average_price}\nSales: $#{total_sales}\n\n"
 	end
-
+	$report_file.write(report)
 end
 
-def display_products
+def products_report
 	# Print "Products" in ascii art
 	asscii_products
+	report = ""
 	# For each product in the data set:
 	$products_hash["items"].each do |toy|
 		# Print the name of the toy
 		toy_name = get_toy_name(toy)
-		puts toy_name
 		# Print the retail price of the toy
 		price = get_retail_price(toy)
-		puts "Retail Price: $#{price}"
 		# Calculate and print the total number of purchases
 		total_purchases = get_list_purchases(toy).length
-		puts "Total Purchases: #{total_purchases}"
 		# Calculate and print the total amount of sales
 		sales = get_total_sales(get_list_purchases(toy))
-		puts "Total Sales: $#{sales}"
 		# Calculate and print the average price the toy sold for
 		average = calc_average_price(sales,total_purchases)
-		puts "Average Price: #{average}"
 		# Calculate and print the average discount (% or $) based off the average sales price
 		discount = calc_average_discount(price,average)
-		puts "Average Discount $#{discount}"
-		puts
+		report += "Name: $#{toy_name}\nRetail Price: $#{price}\nTotal Purchases: #{total_purchases}\nTotal Sales: $#{sales}\nTotal Sales: $#{sales}\nAverage Price: #{average}\nAverage Discount $#{discount}\n\n"
 		build_brands_data_hash(get_brand(toy),price,sales,toy["stock"])
 	end
+	$report_file.write(report)
+end
 
+def generate_final_report
+	products_report
+	brands_report
+	$report_file.close
 end
 
 def start
@@ -160,9 +156,9 @@ def start
 	# Print "Sales Report" in ascii art
 	ascii_sales_report
 	# Print today's date
-	puts Time.now
+	$report_file.write( Time.now.to_s + "\n" )
 end
+
 setup_files
 start
-display_products
-display_brands
+generate_final_report
