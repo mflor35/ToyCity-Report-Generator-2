@@ -18,7 +18,7 @@ def ascii_sales_report
 
 end
 
-def asscii_products
+def ascii_products
 	$report_file.write( "                     _            _       \n")
 	$report_file.write( "                    | |          | |      \n")
 	$report_file.write( " _ __  _ __ ___   __| |_   _  ___| |_ ___ \n")
@@ -125,7 +125,7 @@ end
 
 def products_report
 	# Print "Products" in ascii art
-	asscii_products
+	ascii_products
 	report = ""
 	# For each product in the data set:
 	$products_hash["items"].each do |toy|
