@@ -110,13 +110,15 @@ def brands_report
 	# For each brand in the data set:
 	$brands_data.each do |key,brand|
 		# Print the name of the brand
+		# Total toys of brand
+		total_toys = brand["count"]
 		# Count and print the number of the brand's toys we stock
-		total_toys = get_total_stock_toys(brand)
+		total_toys_in_stock = get_total_stock_toys(brand)
 		# Calculate and print the average price of the brand's toys
 		average_price = calc_average_price(brand["price"],total_toys)
 		# Calculate and print the total sales volume of all the brand's toys combined
 		total_sales = get_total_sales_brand(brand)
-		report += "Brand Name: #{key}\nToys in Stock: #{total_toys}\nAverage Price: $#{average_price}\nSales: $#{total_sales}\n\n"
+		report += "Brand Name: #{key}\nToys in Stock: #{total_toys_in_stock}\nAverage Price: $#{average_price}\nSales: $#{total_sales}\n\n"
 	end
 	$report_file.write(report)
 end
@@ -139,7 +141,7 @@ def products_report
 		average = calc_average_price(sales,total_purchases)
 		# Calculate and print the average discount (% or $) based off the average sales price
 		discount = calc_average_discount(price,average)
-		report += "Name: $#{toy_name}\nRetail Price: $#{price}\nTotal Purchases: #{total_purchases}\nTotal Sales: $#{sales}\nTotal Sales: $#{sales}\nAverage Price: #{average}\nAverage Discount $#{discount}\n\n"
+		report += "Name: #{toy_name}\nRetail Price: $#{price}\nTotal Purchases: #{total_purchases}\nTotal Sales: $#{sales}\nAverage Price: #{average}\nAverage Discount $#{discount}\n\n"
 		build_brands_data_hash(get_brand(toy),price,sales,toy["stock"])
 	end
 	$report_file.write(report)
